@@ -1,4 +1,5 @@
-﻿using System;
+﻿using String_Hashing.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -24,48 +25,15 @@ namespace String_Hashing
         public MainWindow()
         {
             InitializeComponent();
+            vm = new HashStringVM();
+            DataContext = vm;
         }
 
-        string hash = "foxle@rn";
+        private HashStringVM vm;
 
         private void btnEncrypt_Click(object sender, RoutedEventArgs e)
         {
-            // Get String
-            byte[] data = UTF8Encoding.UTF8.GetBytes(txtString.Text);
-            using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
-            {
-                byte[] keys = md5.ComputeHash(UTF8Encoding.UTF8.GetBytes(hash));
-                using (TripleDESCryptoServiceProvider tripDes = new TripleDESCryptoServiceProvider() { Key = keys, Mode = CipherMode.ECB, Padding = PaddingMode.PKCS7 })
-                {
 
-                    // Start Encryption
-                    ICryptoTransform transform = tripDes.CreateEncryptor();
-                    byte[] result = transform.TransformFinalBlock(data, 0, data.Length);
-
-                    // Passing Result To Textbox
-                    txtEncrypt.Text = Convert.ToBase64String(result, 0, result.Length);
-                }
-            }
-        }
-
-        private void btnEncrypt_Copy_Click(object sender, RoutedEventArgs e)
-        {
-            // Get String
-            byte[] data = Convert.FromBase64String(txtEncrypt.Text);
-            using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
-            {
-                byte[] keys = md5.ComputeHash(UTF8Encoding.UTF8.GetBytes(hash));
-                using (TripleDESCryptoServiceProvider tripDes = new TripleDESCryptoServiceProvider() { Key = keys, Mode = CipherMode.ECB, Padding = PaddingMode.PKCS7 })
-                {
-
-                    // Start Decrypting
-                    ICryptoTransform transform = tripDes.CreateDecryptor();
-                    byte[] result = transform.TransformFinalBlock(data, 0, data.Length);
-
-                    // Passing Result To Textbox
-                    txtDecrypt.Text = UTF8Encoding.UTF8.GetString(result);
-                }
-            }
         }
     }
 }
